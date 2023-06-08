@@ -3,19 +3,28 @@ import json
 
 class Posts:
 
+    PATH_TO_POSTS = "data/posts.json"
+    PATH_TO_COMMENTS = "data/comments.json"
+
     @staticmethod
-    def __get_post_all() -> list:
+    def get_post_all() -> list:
         """
         Get all post from json file
         :return: list with data
         """
-        with open("data/posts.json", "r", encoding="utf-8") as file:
-            all_posts = json.load(file)
+        try:
+            with open(Posts.PATH_TO_POSTS, "r", encoding="utf-8") as file:
+                all_posts = json.load(file)
+        except FileNotFoundError:
+            all_posts = []
+
+        except json.JSONDecodeError:
+            all_posts = []
         return all_posts
 
     @staticmethod
     def __get_comments_all():
-        with open("data/comments.json", "r", encoding="utf-8") as file:
+        with open(Posts.PATH_TO_COMMENTS, "r", encoding="utf-8") as file:
             all_comments = json.load(file)
         return all_comments
 
@@ -25,14 +34,14 @@ class Posts:
         :param user_name: name of user
         :return: List with all post of the user
         """
-        all_posts = self.__get_post_all()
+        all_posts = self.get_post_all()
         all_posts_by_user = []
         flag = False
         for post in all_posts:
             if post.get("poster_name") == user_name.lower():
                 all_posts_by_user.append(post)
                 flag = True
-        if flag:
+        if not flag:
             raise ValueError("User not found")
         return all_posts_by_user
 
@@ -50,8 +59,8 @@ class Posts:
                 comments_by_post_id.append(comment)
                 flag = True
         if flag:
-            raise ValueError("Comments no found")
-        return comments_by_post_id
+            return comments_by_post_id
+        raise ValueError("Comments not found")
 
     def search_for_posts(self, query: str) -> list:
         """
@@ -59,15 +68,15 @@ class Posts:
         :param query: parameter search
         :return:
         """
-        all_posts = self.__get_post_all()
+        all_posts = self.get_post_all()
         searching_posts = []
         for post in all_posts:
             if query.lower() in post.get("content").lower():
                 searching_posts.append(post)
         return searching_posts
 
-    def get_post_by_pk(self, pk:int) -> dict | None:
-        all_posts = self.__get_post_all()
+    def get_post_by_pk(self, pk: int) -> dict | None:
+        all_posts = self.get_post_all()
         for post in all_posts:
             if post.get("pk") == pk:
                 return post
