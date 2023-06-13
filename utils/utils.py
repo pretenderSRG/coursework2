@@ -24,8 +24,11 @@ class Posts:
 
     @staticmethod
     def __get_comments_all():
-        with open(Posts.PATH_TO_COMMENTS, "r", encoding="utf-8") as file:
-            all_comments = json.load(file)
+        try:
+            with open(Posts.PATH_TO_COMMENTS, "r", encoding="utf-8") as file:
+                all_comments = json.load(file)
+        except FileNotFoundError:
+            return None
         return all_comments
 
     def get_post_by_user(self, user_name: str) -> list:
@@ -47,7 +50,7 @@ class Posts:
 
     def get_comments_by_post_id(self, post_id: int) -> list:
         """
-        Gett all coments to post by id
+        Get all comments to post by id
         :param post_id: post id
         :return: all comments
         """
