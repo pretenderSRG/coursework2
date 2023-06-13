@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template,request
-from utils.utils import Posts, add_tag_to_posts
+from utils.utils import Posts, add_tag_to_posts, Bookmarks
 
 
 main_blueprint = Blueprint("main_blueprint", __name__, template_folder="templates")
@@ -8,8 +8,10 @@ posts = Posts()
 
 @main_blueprint.route('/')
 def page_index():
+    bookmarks = Bookmarks()
+    all_bookmarks_posts = bookmarks.get_all_posts_in_bookmarks()
     all_posts = posts.get_post_all()
-    return render_template('index.html', posts=all_posts)
+    return render_template('index.html', posts=all_posts, bookmarks=all_bookmarks_posts)
 
 
 @main_blueprint.route('/posts/<int:postid>')
@@ -42,3 +44,5 @@ def tag_page(tagname):
     if posts_with_tag:
         return render_template('tag.html', tag=tagname, posts=posts_with_tag)
     return f"<h1>Постів з тегом #{tagname} - немає((( </h1> <br><a href='/'>На головну</a>", 200
+
+

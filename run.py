@@ -2,12 +2,14 @@ from flask import Flask
 
 from app.main.views import main_blueprint
 from app.api.views import api_blueprint
+from app.bookmarks.views import bookmarks_bp
 
 
 app = Flask(__name__)
 
 app.register_blueprint(main_blueprint)
 app.register_blueprint(api_blueprint)
+app.register_blueprint(bookmarks_bp)
 
 
 @app.errorhandler(404)

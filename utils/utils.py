@@ -106,3 +106,39 @@ class Posts:
             if tagname in content_word:
                 posts_with_tag.append(post)
         return posts_with_tag
+
+
+class Bookmarks:
+    PATH_TO_BOOKMARKS = 'data/bookmarks.json'
+
+    @staticmethod
+    def get_all_posts_in_bookmarks():
+        try:
+            with open(Bookmarks.PATH_TO_BOOKMARKS, 'r', encoding='utf-8') as file:
+                bookmarks = json.load(file)
+                return bookmarks
+        except FileNotFoundError:
+            bookmarks = []
+        return bookmarks
+
+    @staticmethod
+    def __save_data(data):
+        with open(Bookmarks.PATH_TO_BOOKMARKS, 'w', encoding='utf-8') as file:
+            file.seek(0)
+            json.dump(data, file, indent=4)
+
+    def add_post_to_bookmark(self, post):
+        bookmarks_posts = self.get_all_posts_in_bookmarks()
+        if post not in bookmarks_posts:
+            bookmarks_posts.append(post)
+        self.__save_data(bookmarks_posts)
+
+    def remove_post_from_bookmark(self, post_id):
+        bookmarks_posts = self.get_all_posts_in_bookmarks()
+        for post in bookmarks_posts:
+            if post.get('pk') == post_id:
+                bookmarks_posts.remove(post)
+        self.__save_data(bookmarks_posts)
+
+
+
