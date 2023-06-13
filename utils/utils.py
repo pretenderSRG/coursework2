@@ -1,6 +1,17 @@
 import json
 
 
+def add_tag_to_posts(content: str) -> str:
+    content_words = content.split()
+    content_with_life_tag = []
+    for word in content_words:
+        if word.startswith("#"):
+            content_with_life_tag.append(f"<a href='/tag/{word[1:]}'>{word}</a>")
+        else:
+            content_with_life_tag.append(word)
+    return ' '.join(content_with_life_tag)
+
+
 class Posts:
 
     PATH_TO_POSTS = "data/posts.json"
@@ -84,3 +95,14 @@ class Posts:
             if post.get("pk") == pk:
                 return post
         return None
+
+    def get_posts_by_tag(self, tag):
+        all_posts = self.get_post_all()
+        tagname = "#" + tag
+        posts_with_tag = []
+
+        for post in all_posts:
+            content_word = post.get("content").split()
+            if tagname in content_word:
+                posts_with_tag.append(post)
+        return posts_with_tag
